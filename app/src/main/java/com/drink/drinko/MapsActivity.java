@@ -42,6 +42,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Geocoder geocoder;
     Double latitude=1.0,longitude=2.0;
     String address="fetching...";
+    Connection connection;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +52,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
         geocoder=new Geocoder(this, Locale.getDefault());
         storage = new Storage(this);
-
+        connection=new Connection();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         getLocationPermission();
 
@@ -92,15 +93,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         address=getAddress(new LatLng(currentLocation.getLatitude(),currentLocation.getLongitude()));
                         storage.setLatitude(String.valueOf(latitude));
                         storage.setLongitude(String.valueOf(longitude));
-
                         moveCamera(currentLocation,"my location");
                         storage.setLocation(address);
-                        if(storage.getId()!=null){
-
-
-
-
-                        }
 
                     }
                     }
@@ -108,9 +102,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }catch (Exception e){
 
             }
-
-
-
         }
     }
 
@@ -120,7 +111,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         try {
             ArrayList<Address> addresses= (ArrayList<Address>) geocoder.getFromLocation(latLng.latitude,latLng.longitude,2);
             address=addresses.get(0).getAddressLine(0);
-
+            if(storage.getId()!=null){
+                connection.getDbUser().child("none").child(storage.getId()).child("location").setValue(address);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
