@@ -4,4 +4,8 @@
     <color name="colorPrimaryDark">#333333</color>
     <color name="colorAccent">#D81B60</color>
     <color name="black">#000000</color>
+    <color name="item_supplier_color">#ffffff</color>
+    <color name="item_service_color">#00ffff</color>
+    <color name="address_color">#FFA500</color>
+    <color name="activity_main_background">#dddddd</color>
 </resources>

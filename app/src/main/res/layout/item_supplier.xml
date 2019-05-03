@@ -2,12 +2,14 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="@dimen/padding"
+    android:layout_margin="@dimen/margin"
     android:orientation="vertical"
     >
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/item_supplier_color"
+        >
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -50,10 +52,22 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_margin="@dimen/padding"
+                    android:layout_marginTop="@dimen/margin"
+                    android:layout_marginRight="@dimen/margin"
                     android:src="@drawable/ic_call_black_24dp"
                     android:id="@+id/btnCall"
                     />
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_delete_black_24dp"
+                    android:id="@+id/btnDelete"
+                    android:layout_alignParentRight="true"
+                    android:layout_marginRight="@dimen/margin"
+                    android:layout_below="@id/btnCall"
+                    android:visibility="gone"
+                    />
+
             </RelativeLayout>
 
         </RelativeLayout>

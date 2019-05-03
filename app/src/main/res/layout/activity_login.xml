@@ -68,14 +68,14 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_marginTop="@dimen/padding"
+                android:layout_marginTop="@dimen/margin"
                 android:layout_height="wrap_content">
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textAlignment="center"
                     android:text="new user \n click on sign up or register button to create your account"
-                    android:padding="@dimen/padding"
+                    android:padding="@dimen/margin"
                     />
 
 

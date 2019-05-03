@@ -1,16 +1,18 @@
 package com.drink.drinko;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.NonNull;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,13 +32,23 @@ public class SignUpActivity extends AppCompatActivity {
     String name;
     String number;
     String url;
+    EditText edtAuthenticate;
+    Button btnAuthenticate;
+    String startTime,endTime;
 
+    boolean boolAuthenticate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         mAuth=FirebaseAuth.getInstance();
         progressBar=findViewById(R.id.progress_circular);
+        edtAuthenticate=findViewById(R.id.edtAuthentication);
+        btnAuthenticate=findViewById(R.id.btnAuthenticate);
+
+        edtAuthenticate.setVisibility(View.GONE);
+        btnAuthenticate.setVisibility(View.GONE);
+        boolAuthenticate=false;
         url="default";
         userType="Customer";
         RadioGroup radioGroup=findViewById(R.id.radio);
@@ -45,11 +57,42 @@ public class SignUpActivity extends AppCompatActivity {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId){
                     case R.id.radioCustomer:
+                        edtAuthenticate.setVisibility(View.GONE);
+                        btnAuthenticate.setVisibility(View.GONE);
                         userType="Customer";
+                        boolAuthenticate=false;
                         break;
                     case R.id.radioSupplier:
+                        edtAuthenticate.setVisibility(View.GONE);
+                        btnAuthenticate.setVisibility(View.GONE);
+                        boolAuthenticate=false;
                         userType="Supplier";
                         break;
+                    case R.id.radioCertifiedSupplier:
+                        edtAuthenticate.setVisibility(View.VISIBLE);
+                        btnAuthenticate.setVisibility(View.VISIBLE);
+                        boolAuthenticate=true;
+                        userType="Certified Supplier";
+                        break;
+                    case R.id.radioColdWater:
+                        edtAuthenticate.setVisibility(View.VISIBLE);
+                        boolAuthenticate=true;
+                        btnAuthenticate.setVisibility(View.VISIBLE);
+                        userType="Cold Water supplier";
+                        break;
+                }
+            }
+        });
+        btnAuthenticate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(edtAuthenticate.getText().toString().equals("9876")){
+                    edtAuthenticate.setVisibility(View.GONE);
+                    btnAuthenticate.setText("Authentication Successful");
+                    btnAuthenticate.setBackgroundColor(Color.parseColor("#00FF00"));
+                    boolAuthenticate=false;
+                }else{
+                    edtAuthenticate.setError("Wrong Code try Again");
                 }
             }
         });
@@ -67,7 +110,18 @@ public class SignUpActivity extends AppCompatActivity {
                 name = edtName.getText().toString();
                 number = edtNumber.getText().toString();
                 url = edtUrl.getText().toString();
-
+                if(edtAuthenticate.getText().toString().equals("9876")){
+                    edtAuthenticate.setVisibility(View.GONE);
+                    btnAuthenticate.setText("Authentication Successful");
+                    btnAuthenticate.setBackgroundColor(Color.parseColor("#00FF00"));
+                    boolAuthenticate=false;
+                }else{
+                    edtAuthenticate.setError("Wrong Code try Again");
+                }
+                if(boolAuthenticate){
+                    edtAuthenticate.setError("Enter Authentication Code");
+                    return;
+                }
                 if(!email.contains("@")||email.trim().length()<4){
                     edtEmail.setError("invalid email");
                     return;
@@ -84,9 +138,15 @@ public class SignUpActivity extends AppCompatActivity {
                     edtPassword.setError("Password too short");
                     return;
                 }
-
                 progressBar.setVisibility(View.VISIBLE);
-
+                TimePicker start=findViewById(R.id.timeStart);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    startTime=String.valueOf(start.getHour()*100+start.getMinute());
+                }
+                TimePicker end=findViewById(R.id.timeEnd);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    endTime=String.valueOf(end.getHour()*100+end.getMinute());
+                }
                 mAuth.createUserWithEmailAndPassword(email, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                             @Override
@@ -100,6 +160,7 @@ public class SignUpActivity extends AppCompatActivity {
                                             Toast.LENGTH_SHORT).show();
                                     Connection connection=new Connection();
                                     User user1=new User(name,email,userType,url,number,"not available");
+                                    user1.setEndTime(endTime);user1.setStartTime(startTime);
                                     connection.getDbUser().child(userType).child(user.getUid()).setValue(user1);
                                     connection.getDbUser().child("none").child(user.getUid()).setValue(user1);
                                     Storage storage=new Storage(getBaseContext());

@@ -8,13 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.zip.Inflater;
 
 public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder> {
     ArrayList<User> userArrayList;
@@ -37,19 +36,61 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
     public void onBindViewHolder(@NonNull Holder holder, int i) {
         final User user=userArrayList.get(i);
         holder.tvName.setText(user.getName());
-        holder.tvNumber.setText(user.getContact());
-        holder.tvMail.setText(user.getEmail());
+        holder.tvNumber.setText(user.getUserType());
+        holder.tvMail.setText(timing(user.getStartTime(),user.getEndTime()));
         holder.tvAddress.setText(user.getLocation());
         holder.imageView.setImageResource(R.drawable.common_google_signin_btn_icon_dark_normal_background);
         Picasso.get().load(user.getProfile()).error(R.drawable.ic_invert_colors_black_24dp).into(holder.imageView);
         holder.btnCall.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                click.onClick(user.getContact());
+                click.onClick(user);
             }
         });
+        if(user.getLocation().equals("recent connected")){
+            holder.btnDelete.setVisibility(View.VISIBLE);
+            RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams)holder.btnCall.getLayoutParams();
+            relativeParams.topMargin=0;
+            holder.btnCall.setLayoutParams(relativeParams);
+
+        }
+        holder.btnDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                click.delete(user.getContact());
+            }
+        });
+
+
 //        Toast.makeText(context,user.getProfile(),Toast.LENGTH_SHORT).show();
 
+    }
+
+    private String timing(String startTime, String endTime) {
+   //     startTime="1247";endTime="1148";
+        if(startTime!=null||endTime!=null){
+            try{
+                int hs= Integer.parseInt(startTime.substring(0,2));
+                String mins=(startTime.substring(2,4));
+                int he=Integer.parseInt(endTime.substring(0,2));
+                String mine=(endTime.substring(2,4));
+                String p1="am",p2="am";
+                if(hs/12>0){
+                    p1="pm";
+                }if(he/12>0){
+                    p2="pm";
+                }
+                if(hs>12){
+                    hs=hs-12;
+                }if(he>12){
+                    he=he-12;
+                }
+                return hs+":"+ mins+" "+p1+" to "+he+":"+mine +" "+p2;
+            }catch (Exception e){
+
+            }
+        }
+    return "9:00 am to 11:30 pm";
     }
 
     @Override
@@ -60,7 +101,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
     class  Holder extends RecyclerView.ViewHolder{
         ImageView imageView;
         TextView tvName,tvMail,tvNumber,tvAddress;
-        ImageButton btnCall;
+        ImageButton btnCall,btnDelete;
         public Holder(@NonNull View itemView) {
             super(itemView);
             tvAddress=itemView.findViewById(R.id.tvAddress);
@@ -69,6 +110,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
             tvMail=itemView.findViewById(R.id.tvMail);
             tvNumber=itemView.findViewById(R.id.tvNumber);
             btnCall=itemView.findViewById(R.id.btnCall);
+            btnDelete=itemView.findViewById(R.id.btnDelete);
         }
     }
 }

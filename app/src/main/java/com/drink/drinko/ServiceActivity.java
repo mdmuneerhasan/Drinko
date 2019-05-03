@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,77 +31,43 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements Click {
-    // new repo 1.1
+public class ServiceActivity extends AppCompatActivity implements Click {
     Storage storage;
     TextView tvAddress;
     int radius=1;
     int count=0;
     ArrayList<User> arrayListUser;
-    ArrayList<User> arrayListService;
-    RecyclerView recyclerView,recyclerView2;
+    RecyclerView recyclerView;
     SupplierAdapter supplierAdapter;
-    ServiceAdapter serviceAdapter;
     Connection connection;
     ProgressBar progressBar;
+    String userType=" ";
     Database database;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_service);
         tvAddress=findViewById(R.id.tvAddress);
         progressBar=findViewById(R.id.progress);
-
-        database=new Database(this);
         storage=new Storage(this);
         arrayListUser =new ArrayList<>();
-        arrayListService =new ArrayList<>();
         recyclerView=findViewById(R.id.recycler);
-        recyclerView2=findViewById(R.id.recycler2);
         connection=new Connection();
+        database=new Database(this);
         supplierAdapter=new SupplierAdapter(arrayListUser);
-        serviceAdapter=new ServiceAdapter(arrayListService);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(supplierAdapter);
-
-
-
-        arrayListService.add(new User("Cold Water Service","","Cold Water supplier","https://mondrian.mashable.com/uploads%252Fcard%252Fimage%252F782032%252F44e33672-4339-426b-a2e9-22e78a700e00.jpg%252F950x534__filters%253Aquality%252890%2529.jpg?signature=C9zK312NjY7n2SNEzTRCErsJ0tQ=&source=https%3A%2F%2Fblueprint-api-production.s3.amazonaws.com","",""));
-        arrayListService.add(new User("Purity Certified Supplier","","Certified Supplier","https://img.freepik.com/free-vector/guarantee-best-quality-stamp_1017-7145.jpg?size=338&ext=jpg","",""));
-        recyclerView2.setLayoutManager(new StaggeredGridLayoutManager(1,StaggeredGridLayoutManager.HORIZONTAL));
-        recyclerView2.setAdapter(serviceAdapter);
         tvAddress.setText("My Address \n "+storage.getLocation());
-        tvAddress.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        try{
+            userType=getIntent().getStringExtra("userType");
+        }catch (Exception e){
 
+        }
 
-                Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-                mapIntent.setPackage("com.google.android.apps.maps");
-                startActivity(mapIntent);
-                finish();
-
-
-
-//                Intent intent=new Intent(getBaseContext(),MapsActivity.class);
-//                startActivity(intent);
-//                finish();
-            }
-        });
-        fetch();
-
-    }
-
-    private void fetch() {
-
-        arrayListUser.addAll(database.getUser());
         if(storage.getLatitude()!=null||storage.getLongitude()!=null){
-            findSupplier("Supplier");
-            findSupplier("Certified Supplier");
-            findSupplier("Cold Water supplier");
+            findSupplier(userType);
         }
     }
-
     private void findSupplier(String type) {
         DatabaseReference ref=new Connection().getDbRequest().child(type);
         GeoFire geoFire=new GeoFire(ref);
@@ -115,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements Click {
                     public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                         if(dataSnapshot!=null){
                             User user=dataSnapshot.getValue(User.class);
-                            if(user==null){
+                            if(user.getName()==null){
                                 if(key!=null){
                                     new Connection().getDbRequest().child("Supplier").child(key).removeValue();
                                     new Connection().getDbRequest().child("Certified Supplier").child(key).removeValue();
@@ -135,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements Click {
 
                     @Override
                     public void onCancelled(@NonNull DatabaseError databaseError) {
+//                        Toast.makeText(getApplicationContext(),"keyExited",Toast.LENGTH_SHORT).show();
 
                     }
                 });
@@ -142,15 +108,20 @@ public class MainActivity extends AppCompatActivity implements Click {
 
             @Override
             public void onKeyExited(String key) {
+
+  //          Toast.makeText(getApplicationContext(),"keyExited",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onKeyMoved(String key, GeoLocation location) {
+    //            Toast.makeText(getApplicationContext(),"onKeyMoved",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onGeoQueryReady() {
+      //          Toast.makeText(getApplicationContext(),"onGeoQueryReady",Toast.LENGTH_SHORT).show();
             }
             @Override
             public void onGeoQueryError(DatabaseError error) {
+        //        Toast.makeText(getApplicationContext(),"onGeoQueryError",Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -219,17 +190,16 @@ public class MainActivity extends AppCompatActivity implements Click {
         try{
              Double.parseDouble(number);
             Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
-            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},234);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (ContextCompat.checkSelfPermission(ServiceActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(ServiceActivity.this, new String[]{Manifest.permission.CALL_PHONE},234);
                     Toast.makeText(this,"please try again",Toast.LENGTH_SHORT).show();
+
                 }
                 else
-                {   database.insert(user);
-                    startActivity(intent);
-                    arrayListUser.clear();
-                    fetch();
-
+                {
+                    database.insert(user);
+                        startActivity(intent);
                 }
             }
             else
@@ -240,9 +210,9 @@ public class MainActivity extends AppCompatActivity implements Click {
             Toast.makeText(this,"invalid supplier number",Toast.LENGTH_SHORT).show();
         }
 
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE},234);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(ServiceActivity.this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(ServiceActivity.this, new String[]{Manifest.permission.CALL_PHONE},234);
                 Toast.makeText(this,"please try again",Toast.LENGTH_SHORT).show();
 
             }
@@ -251,9 +221,6 @@ public class MainActivity extends AppCompatActivity implements Click {
 
     @Override
     public void delete(String contact) {
-        database.deleteUser(contact);
-        arrayListUser.clear();
-        fetch();
 
     }
 }

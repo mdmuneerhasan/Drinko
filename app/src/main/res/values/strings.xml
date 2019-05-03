@@ -108,4 +108,6 @@
     </string>
     <string name="title_activity_maps2">Map</string>
     <string name="title_activity_maps3">Map</string>
+    <string name="start_time"><u>Service Start Time</u></string>
+    <string name="service_end_time"><u>Service End Time</u></string>
 </resources>
