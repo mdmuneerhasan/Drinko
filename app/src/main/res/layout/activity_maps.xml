@@ -14,17 +14,28 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         />
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Save My Location"
-            android:textColor="@color/black"
-            android:id="@+id/btnSave"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="@dimen/margin"
-            android:onClick="save"
-            />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fetch Current Location"
+        android:textColor="@color/black"
+        android:layout_above="@id/btnSave"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin"
+        android:onClick="fetch"
+        />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Find Supplier"
+        android:textColor="@color/black"
+        android:id="@+id/btnSave"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/margin"
+        android:onClick="save"
+        />
 
 
 

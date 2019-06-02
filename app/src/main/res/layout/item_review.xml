@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginRight="@dimen/margin"
+    android:layout_marginTop="@dimen/margin"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvComment"
+        android:textColor="@color/black"
+        android:text="comment"
+        android:textSize="@dimen/margin"
+        />
+
+    <RatingBar
+        android:id="@+id/rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="?android:attr/ratingBarStyleSmall"
+        android:numStars="5"
+        android:rating="3"
+        android:stepSize="0.1"
+        android:isIndicator="true"
+        android:layout_below="@id/tvComment"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="name"
+        android:layout_below="@id/tvComment"
+        android:layout_toEndOf="@id/rating"
+        android:layout_marginLeft="@dimen/margin"
+        android:id="@+id/tvName"
+        />
+
+    <View
+    android:layout_width="match_parent"
+    android:layout_height="2dp"
+    />
+</RelativeLayout>

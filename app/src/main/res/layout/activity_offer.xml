@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".OfferActivity"
+    android:orientation="vertical"
+    android:layout_margin="@dimen/margin"
+    >
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:id="@+id/linearLayout1"
+    >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Get your first order free\n from drinko \n(with registered supplier)"
+        android:layout_marginTop="50dp"
+        android:textAlignment="center"
+        />
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/edtSupplierId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="italic"
+            android:hint="Supplier id"
+            android:maxLines="1"
+            android:singleLine="true" />
+
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/btnClaim"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Claim"
+        android:onClick="claim"
+        android:textStyle="bold" />
+    <Button
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Skip"
+        android:onClick="skip"
+        android:textStyle="bold" />
+
+
+</LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:orientation="vertical"
+      android:id="@+id/linearLayout2"
+      android:visibility="gone"
+      >
+      <TextView
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:id="@+id/tvCode"
+          android:gravity="center_horizontal"
+          android:layout_marginTop="@dimen/margin"
+          android:layout_marginBottom="@dimen/margin"
+          android:textSize="@dimen/margin"
+          android:textColor="@color/black"
+          />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/margin"
+          android:text="name : "
+          android:textColor="@color/black"
+          android:layout_marginTop="@dimen/margin"
+          />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/margin"
+          android:id="@+id/edtName"
+          />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/margin"
+          android:text="Contact number : "
+          android:layout_marginTop="@dimen/margin"
+          android:textColor="@color/black"
+          />
+      <TextView
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:textSize="@dimen/margin"
+          android:textColor="@color/black"
+          android:id="@+id/edtAddress"
+          />
+      <Button
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="Claim Your Offer"
+          android:layout_marginTop="@dimen/margin"
+          android:onClick="claim2"
+          />
+  </LinearLayout>
+
+
+</RelativeLayout>

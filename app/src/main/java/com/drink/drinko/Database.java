@@ -14,7 +14,7 @@ public class Database extends SQLiteOpenHelper {
     Context context;
 
     public Database( Context context) {
-        super(context, "favourite", null, 2);
+        super(context, "favourite", null, 5);
         this.context=context;
 
     }
@@ -22,7 +22,8 @@ public class Database extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL("create table favourite (id integer primary key ,name text," +
-                "startTime text,endTime text,sType text ,number text,url text )");
+                "startTime text,endTime text,sType text ,number text,url text," +
+                "uid text,star text,numberOfRating text)");
     }
 
     @Override
@@ -41,6 +42,9 @@ public class Database extends SQLiteOpenHelper {
         contentValues.put("sType",user.getUserType());
         contentValues.put("number",user.getContact());
         contentValues.put("url",user.getProfile());
+        contentValues.put("uid",user.getUid());
+        contentValues.put("star",user.getRating());
+        contentValues.put("numberOfRating",user.getNumberOfRating());
         return database.insert("favourite",null,contentValues);
     }
     public ArrayList<User> getUser(){
@@ -55,7 +59,11 @@ public class Database extends SQLiteOpenHelper {
             user.setUserType(res.getString(4));
             user.setContact(res.getString(5));
             user.setProfile(res.getString(6));
-            user.setLocation("recent connected");
+            user.setUid(res.getString(7));
+            user.setRating(res.getString(8));
+            user.setNumberOfRating(res.getString(9));
+
+            user.setLocation("recently connected");
             arrayList.add(user);
         }
         return arrayList;

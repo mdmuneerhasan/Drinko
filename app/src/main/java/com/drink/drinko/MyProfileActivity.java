@@ -25,7 +25,6 @@ public class MyProfileActivity extends AppCompatActivity {
     EditText edtNumber;
     EditText edtUrl;
     String email;
-    String password;
     String name;
     String number;
     String url;
@@ -133,6 +132,7 @@ public class MyProfileActivity extends AppCompatActivity {
                     User user1=new User(name,email,userType,url,number,"none");
                     user1.setEndTime(endTime);user1.setStartTime(startTime);
                     connection.getDbUser().child(userType).child(storage.getId()).setValue(user1);
+                    connection.getDbUser().child("none").child(storage.getId()).setValue(user1);
                     connection.getDbUser().child("none").child(storage.getId()).setValue(user1);
                     storage.setContact(number);
                     storage.setEmail(email);

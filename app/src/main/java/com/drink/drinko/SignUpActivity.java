@@ -20,6 +20,9 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignUpActivity extends AppCompatActivity {
 
@@ -31,11 +34,12 @@ public class SignUpActivity extends AppCompatActivity {
     String password;
     String name;
     String number;
+    Connection connection;
     String url;
     EditText edtAuthenticate;
     Button btnAuthenticate;
     String startTime,endTime;
-
+    String count;
     boolean boolAuthenticate;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -147,44 +151,61 @@ public class SignUpActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     endTime=String.valueOf(end.getHour()*100+end.getMinute());
                 }
-                mAuth.createUserWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
-                                    progressBar.setVisibility(View.GONE);
-                                    // Sign in success, update UI with the signed-in user's information
-                                    Log.d(TAG, "createUserWithEmail:success");
-                                    FirebaseUser user = mAuth.getCurrentUser();
-                                    Toast.makeText(SignUpActivity.this, "Authentication Successful.",
-                                            Toast.LENGTH_SHORT).show();
-                                    Connection connection=new Connection();
-                                    User user1=new User(name,email,userType,url,number,"not available");
-                                    user1.setEndTime(endTime);user1.setStartTime(startTime);
-                                    connection.getDbUser().child(userType).child(user.getUid()).setValue(user1);
-                                    connection.getDbUser().child("none").child(user.getUid()).setValue(user1);
-                                    Storage storage=new Storage(getBaseContext());
-                                    storage.setContact(number);
-                                    storage.setEmail(email);
-                                    storage.setId(user.getUid());
-                                    storage.setName(name);
-                                    storage.setProfile(url);
-                                    storage.setUserType(userType);
-                                    Intent intent=new Intent(getBaseContext(),MapsActivity.class);
-                                    startActivity(intent);
-                                    finish();
-                                } else {
-                                    progressBar.setVisibility(View.GONE);
-                                    // If sign in fails, display a message to the user.
-                                    Log.w("error On Muneer", "createUserWithEmail:failure", task.getException());
-                                    Toast.makeText(SignUpActivity.this, "Authentication failed. "+task.getException(),
-                                            Toast.LENGTH_SHORT).show();
-                                    //   updateUI(null);
-                                }
+                connection = new Connection();
+
+                connection.getDbOffer().addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        count= String.valueOf(dataSnapshot.getChildrenCount());
+                        mAuth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<AuthResult> task) {
+                                        if (task.isSuccessful()) {
+                                            progressBar.setVisibility(View.GONE);
+                                            // Sign in success, update UI with the signed-in user's information
+                                            Log.d(TAG, "createUserWithEmail:success");
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            Toast.makeText(SignUpActivity.this, "Authentication Successful.",
+                                                    Toast.LENGTH_SHORT).show();
+                                            User user1=new User(name,email,userType,url,number,"not available");
+                                            user1.setUid(user.getUid());
+                                            user1.setRating(getString(R.string.Rating));
+                                            user1.setNumberOfRating(getString(R.string.NumberOfRating));
+                                            user1.setEndTime(endTime);user1.setStartTime(startTime);
+                                            connection.getDbUser().child(userType).child(user.getUid()).setValue(user1);
+                                            connection.getDbUser().child("none").child(user.getUid()).setValue(user1);
+                                            connection.getDbOffer().child("11"+count).setValue(user1);
+                                            Storage storage=new Storage(getBaseContext());
+                                            storage.setContact(number);
+                                            storage.setEmail(email);
+                                            storage.setId(user.getUid());
+                                            storage.setName(name);
+                                            storage.setProfile(url);
+                                            storage.setUserType(userType);
+                                            Intent intent=new Intent(getBaseContext(),MapsActivity.class);
+                                            startActivity(intent);
+                                            finish();
+                                        } else {
+                                            progressBar.setVisibility(View.GONE);
+                                            // If sign in fails, display a message to the user.
+                                            Log.w("error On Muneer", "createUserWithEmail:failure", task.getException());
+                                            Toast.makeText(SignUpActivity.this, "Authentication failed. "+task.getException(),
+                                                    Toast.LENGTH_SHORT).show();
+                                            //   updateUI(null);
+                                        }
 
 
-                            }
-                        });
+                                    }
+                                });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
         }
     });
     }

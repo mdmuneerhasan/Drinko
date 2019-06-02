@@ -110,4 +110,7 @@
     <string name="title_activity_maps3">Map</string>
     <string name="start_time"><u>Service Start Time</u></string>
     <string name="service_end_time"><u>Service End Time</u></string>
+    <string name="Rating">12.5</string>
+    <string name="NumberOfRating">5</string>
+    <string name="default_rating">2.5/5</string>
 </resources>

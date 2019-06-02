@@ -3,9 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.drink.drinko.ScrollingActivity">
     <item
-        android:title="update location"
-        android:id="@+id/updateLocation"
+        android:title="First order offer"
+        android:id="@+id/myOffer"
         />
+    <item
+    android:title="update location"
+    android:id="@+id/updateLocation"
+    />
 
     <item
         android:id="@+id/logIn"

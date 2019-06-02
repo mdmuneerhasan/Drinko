@@ -119,6 +119,17 @@ public class Storage {
     }
 
     public void clear() {
-        setId(null);
+        editor.putString("id",null);
+        editor.apply();
+        this.id = null;
+    }
+
+    public String getString(String key) {
+        return sharedPreferences.getString(key,null);
+    }
+
+    public void setString(String key, String value) {
+        editor.putString(key,value);
+        editor.apply();
     }
 }

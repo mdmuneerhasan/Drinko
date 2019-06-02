@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -54,8 +55,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         storage = new Storage(this);
         connection=new Connection();
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        getLocationPermission();
 
+
+        getLocationPermission();
 
     }
 
@@ -95,12 +97,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         storage.setLongitude(String.valueOf(longitude));
                         moveCamera(currentLocation,"my location");
                         storage.setLocation(address);
-
+                        if(storage.getString("first")==null){
+                            startActivity(new Intent(getBaseContext(),OfferActivity.class));
+                        }else{
+                            startActivity(new Intent(getBaseContext(),MainActivity.class));
+                        }
                     }
                     }
                 });
             }catch (Exception e){
-
             }
         }
     }
@@ -114,10 +119,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(storage.getId()!=null){
                 connection.getDbUser().child("none").child(storage.getId()).child("location").setValue(address);
             }
+            FirebaseDatabase.getInstance().getReference("complement").push().child("location").setValue(address);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
-
         return  address;
     }
 
@@ -199,5 +205,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Intent intent=new Intent(this,MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    public void fetch(View view) {
+        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
+        mapIntent.setPackage("com.google.android.apps.maps");
+        startActivity(mapIntent);
+
     }
 }

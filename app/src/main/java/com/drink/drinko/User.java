@@ -1,10 +1,18 @@
 package com.drink.drinko;
 
 class User {
-    String name,email,userType,profile,contact,location,startTime,endTime,rating, numberOfRating;
+    String name,email,userType,profile,contact,location,startTime,endTime,rating, numberOfRating,uid;
 
     public String getStartTime() {
         return startTime;
+    }
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public void setStartTime(String startTime) {

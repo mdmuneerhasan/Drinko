@@ -1,6 +1,7 @@
 package com.drink.drinko;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -47,7 +49,16 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
                 click.onClick(user);
             }
         });
-        if(user.getLocation().equals("recent connected")){
+
+
+        if(user.getNumberOfRating()!=null){
+            int numberOfRating= Integer.parseInt(user.getNumberOfRating());
+            Float rt= Float.parseFloat(user.getRating());
+            holder.rtBar.setRating(rt/numberOfRating);
+            holder.tvRatingNumber.setText(String.format("%.1f",(rt/numberOfRating))+"/"+String.valueOf(numberOfRating));
+        }
+
+        if(user.getLocation().equals("recently connected")){
             holder.btnDelete.setVisibility(View.VISIBLE);
             RelativeLayout.LayoutParams relativeParams = (RelativeLayout.LayoutParams)holder.btnCall.getLayoutParams();
             relativeParams.topMargin=0;
@@ -61,7 +72,12 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
             }
         });
 
-
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                context.startActivity(new Intent(context,PreviewActivity.class).putExtra("uid",user.getUid()));
+            }
+        });
 //        Toast.makeText(context,user.getProfile(),Toast.LENGTH_SHORT).show();
 
     }
@@ -100,10 +116,13 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
 
     class  Holder extends RecyclerView.ViewHolder{
         ImageView imageView;
-        TextView tvName,tvMail,tvNumber,tvAddress;
+        TextView tvName,tvMail,tvNumber,tvAddress,tvRatingNumber;
+        RatingBar rtBar;
         ImageButton btnCall,btnDelete;
         public Holder(@NonNull View itemView) {
             super(itemView);
+            tvRatingNumber=itemView.findViewById(R.id.tvRatingNumber);
+            rtBar=itemView.findViewById(R.id.rating);
             tvAddress=itemView.findViewById(R.id.tvAddress);
             imageView=itemView.findViewById(R.id.imageView);
             tvName=itemView.findViewById(R.id.tvName);
