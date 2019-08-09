@@ -3,6 +3,7 @@ package com.drink.drinko;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 
 public class Connection {
     FirebaseDatabase instance;
@@ -23,4 +24,8 @@ public class Connection {
     public DatabaseReference getDbOffer() {
         return instance.getReference("offer");
     }
+    public DatabaseReference getDbControl() {
+        return instance.getReference("control");
+    }
+
 }

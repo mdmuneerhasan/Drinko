@@ -36,7 +36,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvName"
-                    android:textSize="@dimen/textSize"
+                    android:textSize="@dimen/small_text"
                     android:text="Mail"
                     android:id="@+id/tvMail"
                     />
@@ -44,7 +44,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tvMail"
-                    android:textSize="@dimen/textSize"
+                    android:textSize="@dimen/small_text"
                     android:text="Phone"
                     android:id="@+id/tvNumber"
                     />

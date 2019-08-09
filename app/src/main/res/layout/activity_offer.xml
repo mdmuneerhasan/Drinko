@@ -16,24 +16,24 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Get your first order free\n from drinko \n(with registered supplier)"
+        android:text="Set your default supplier\nAsk supplier for their id"
         android:layout_marginTop="50dp"
         android:textAlignment="center"
         />
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="128dp"
-        >
+        android:layout_marginTop="128dp">
 
         <AutoCompleteTextView
             android:id="@+id/edtSupplierId"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="italic"
             android:hint="Supplier id"
             android:maxLines="1"
-            android:singleLine="true" />
+            android:singleLine="true"
+            android:textStyle="italic" />
 
     </android.support.design.widget.TextInputLayout>
 
@@ -43,7 +43,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Claim"
+        android:text="Set"
         android:onClick="claim"
         android:textStyle="bold" />
     <Button

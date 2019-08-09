@@ -95,11 +95,11 @@ public class OfferActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        connection.getDbOffer().addListenerForSingleValueEvent(new ValueEventListener() {
+        connection.getDbControl().addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 int versionNumber=1;
-                String response=dataSnapshot.child("avail").getValue(String.class);
+                String response=dataSnapshot.child("version").getValue(String.class);
                 if(response!=null){
                     PackageInfo pinfo = null;
                     try {

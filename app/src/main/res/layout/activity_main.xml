@@ -29,26 +29,64 @@
                 android:text="address"
                 android:id="@+id/tvAddress"
                 android:textAlignment="center"
-                android:textSize="@dimen/textSize"
+                android:textSize="@dimen/small_text"
                 android:padding="@dimen/margin"
                 />
         </android.support.v7.widget.CardView>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_below="@id/card"
+            android:id="@+id/linearLayout1"
+            android:onClick="nightServices"
+            android:layout_margin="@dimen/margin"
+            android:visibility="gone"
+            >
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                >
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="100dp"
+                        android:id="@+id/imageView"
+                        />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="Night shift supply service"
+                        android:textColor="@color/black"
+                        android:textStyle="bold"
+                        android:textSize="@dimen/small_text"
+                        android:id="@+id/tvTitle"
+                        />
+
+                </LinearLayout>
+                </android.support.v7.widget.CardView>
+        </LinearLayout>
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             android:id="@+id/card2"
-            android:layout_below="@id/card"
+            android:layout_below="@id/linearLayout1"
             android:backgroundTint="@color/address_color"
             >
-
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="First order offer"
                 android:id="@+id/tvOffer"
                 android:textAlignment="center"
-                android:textSize="@dimen/textSize"
+                android:textSize="@dimen/small_text"
                 android:onClick="Offer"
                 android:padding="@dimen/margin"
                 />
@@ -69,6 +107,7 @@
             android:layout_marginTop="@dimen/margin"
             android:id="@+id/recycler2"
             />
+
         <android.support.v7.widget.RecyclerView
             android:layout_width="match_parent"
             android:layout_height="500dp"

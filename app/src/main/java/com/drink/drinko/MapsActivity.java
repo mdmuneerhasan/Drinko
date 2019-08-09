@@ -119,7 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if(storage.getId()!=null){
                 connection.getDbUser().child("none").child(storage.getId()).child("location").setValue(address);
             }
-            FirebaseDatabase.getInstance().getReference("complement").push().child("location").setValue(address);
 
         } catch (IOException e) {
             e.printStackTrace();

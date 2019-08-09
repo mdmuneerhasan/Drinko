@@ -71,13 +71,15 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.Holder
                 click.delete(user.getContact());
             }
         });
+        if(user.getUid()!=null){
 
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                context.startActivity(new Intent(context,PreviewActivity.class).putExtra("uid",user.getUid()));
-            }
-        });
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    context.startActivity(new Intent(context,PreviewActivity.class).putExtra("uid",user.getUid()));
+                }
+            });
+        }
 //        Toast.makeText(context,user.getProfile(),Toast.LENGTH_SHORT).show();
 
     }

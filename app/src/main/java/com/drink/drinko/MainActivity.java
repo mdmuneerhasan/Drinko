@@ -2,6 +2,7 @@ package com.drink.drinko;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,6 +17,8 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,6 +32,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+import com.squareup.picasso.Picasso;
 
 import java.security.Permission;
 import java.util.ArrayList;
@@ -49,7 +53,10 @@ public class MainActivity extends AppCompatActivity implements Click {
     Database database;
     User user;
     Intent intent;
-
+    int avail=0;
+    String MuneerHasanname,title,url;
+    String MuneerHasannumber;
+    boolean response=true;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements Click {
         serviceAdapter=new ServiceAdapter(arrayListService);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(supplierAdapter);
+
+
+
         Thread thread=new Thread(){
             @Override
             public void run() {
@@ -106,14 +116,13 @@ public class MainActivity extends AppCompatActivity implements Click {
 //                finish();
             }
         });
-        fetch();
 
     }
 
+
     private void fetch() {
         if(storage.getString("1number")!=null)
-        {
-            User user=new User();
+        { User user=new User();
             user.setUid(storage.getString("1uid"));
             user.setName(storage.getString("1name"));
             user.setContact(storage.getString("1number"));
@@ -141,35 +150,8 @@ public class MainActivity extends AppCompatActivity implements Click {
         GeoQuery geoQuery=geoFire.queryAtLocation(new GeoLocation(Double.valueOf(storage.getLatitude()),Double.valueOf(storage.getLongitude())),radius);
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
-            public void onKeyEntered(final String key, GeoLocation location) {
-                connection.getDbUser().child("none").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                        if(dataSnapshot!=null){
-                            User user=dataSnapshot.getValue(User.class);
-                            if(user==null){
-                                if(key!=null){
-                                    new Connection().getDbRequest().child("Supplier").child(key).removeValue();
-                                    new Connection().getDbRequest().child("Certified Supplier").child(key).removeValue();
-                                    new Connection().getDbRequest().child("Cold Water supplier").child(key).removeValue();
-                                }
-                            }else{
-                                user.setUid(key);
-                                arrayListUser.add(user);
-                                count++;
-                                progressBar.setVisibility(View.GONE);
-                                supplierAdapter.notifyDataSetChanged();
-                            }
-                        }
-                        else{
-                        }
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError databaseError) {
-
-                    }
-                });
+            public void onKeyEntered( String key, GeoLocation location) {
+                fetch( key);
             }
 
             @Override
@@ -183,6 +165,37 @@ public class MainActivity extends AppCompatActivity implements Click {
             }
             @Override
             public void onGeoQueryError(DatabaseError error) {
+            }
+        });
+    }
+
+    private void fetch(final String key) {
+        connection.getDbUser().child("none").child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if(dataSnapshot!=null){
+                    User user=dataSnapshot.getValue(User.class);
+                    if(user==null){
+                        if(key!=null){
+                            new Connection().getDbRequest().child("Supplier").child(key).removeValue();
+                            new Connection().getDbRequest().child("Certified Supplier").child(key).removeValue();
+                            new Connection().getDbRequest().child("Cold Water supplier").child(key).removeValue();
+                        }
+                    }else if(user.getName()!=null){
+                        user.setUid(key);
+                        arrayListUser.add(user);
+                        count++;
+                        progressBar.setVisibility(View.GONE);
+                        supplierAdapter.notifyDataSetChanged();
+                    }
+                }
+                else{
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
             }
         });
     }
@@ -287,6 +300,7 @@ public class MainActivity extends AppCompatActivity implements Click {
     }
 
     public void call(User user) {
+        if(!user.getContact().equals("8052343435"))
         database.insert(user);
         startActivity(intent);
         arrayListUser.clear();
@@ -317,5 +331,69 @@ public class MainActivity extends AppCompatActivity implements Click {
         intent=new Intent(this,OfferActivity.class);
         startActivity(intent);
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        try{
+            connection.getDbControl().addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                    // night services
+                    int night=dataSnapshot.child("nightService").child("showInMainActivity").getValue(Integer.class);
+                    url=dataSnapshot.child("nightService").child("url").getValue(String.class);
+                    title=dataSnapshot.child("nightService").child("title").getValue(String.class);
+                    if(night>0){
+                        TextView tvTitle=findViewById(R.id.tvTitle);
+                        tvTitle.setText(title);
+                        ImageView imageView=findViewById(R.id.imageView);
+                        Picasso.get().load(url).resize(450,250).centerCrop().into(imageView);
+                        findViewById(R.id.linearLayout1).setVisibility(View.VISIBLE);
+                    }
+
+                    // setting defaults
+                    String response=dataSnapshot.child("mainActivity").getValue(String.class);
+                    double lat=dataSnapshot.child("lat").getValue(Double.class);
+                    double error=dataSnapshot.child("error").getValue(Double.class);
+                    MuneerHasannumber=dataSnapshot.child("number").getValue(String.class);
+                    double longi=dataSnapshot.child("longi").getValue(Double.class);
+
+//                lat=Double.parseDouble(storage.getLatitude());
+//                longi= Double.parseDouble(storage.getLongitude());
+
+                    MuneerHasanname=dataSnapshot.child("name").getValue(String.class);
+                    if(Math.abs(lat-Float.parseFloat(storage.getLatitude()))<error && Math.abs(longi-Float.parseFloat(storage.getLongitude()))<error){
+                        if(response!=null){
+                            avail= Integer.parseInt(response);
+                            if(avail!=0){
+                                progressBar.setVisibility(View.GONE);
+                                radius=0f;
+                                arrayListUser.clear();
+                                User user=new User(MuneerHasanname,"","supplier","none",MuneerHasannumber,"");
+                                user.setNumberOfRating(String.valueOf(26));
+                                user.setRating(String.valueOf(4.3*26));
+                                arrayListUser.add(user);
+                                supplierAdapter.notifyDataSetChanged();
+                            }else{
+                                arrayListUser.clear();
+                                fetch();
+                            }
+                        }
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                }
+            });
+        }catch (Exception e){
+
+        }
+    }
+
+    public void nightServices(View view) {
+        startActivity(new Intent(this,NightServiceActivity.class));
     }
 }

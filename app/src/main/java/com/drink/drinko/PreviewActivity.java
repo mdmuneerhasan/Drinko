@@ -3,6 +3,7 @@ package com.drink.drinko;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -143,16 +144,6 @@ public class PreviewActivity extends AppCompatActivity {
             }
         });
     }
-    public void call(View view) {
-        String number=user.getContact();
-        try{
-            Double.parseDouble(number);
-            intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + number));
-            startActivity(intent);
-        }catch (Exception e){
-            Toast.makeText(this,"Connection Error..!!",Toast.LENGTH_SHORT).show();
-        }
-    }
 
     @Override
     protected void onStart() {
@@ -177,5 +168,44 @@ public class PreviewActivity extends AppCompatActivity {
 
             }
         });
+    }    public void call(View view) {
+            try{
+                Double.parseDouble(user.getContact());
+                Intent intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + user.getContact()));
+                if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CALL_PHONE},234);
+                    }
+                    else
+                    {
+                        startActivity(intent);
+
+                    }
+                }
+                else
+                {
+                    startActivity(intent);
+                }
+            }catch (Exception e){
+                Toast.makeText(this,"invalid supplier number",Toast.LENGTH_SHORT).show();
+            }
+
     }
+
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if(requestCode==234){
+            if(grantResults.length>0&&grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                call(new View(this));
+            }else{
+                Toast.makeText(this,"Please Grant Permission...",Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
 }
+

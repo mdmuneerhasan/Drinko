@@ -113,4 +113,5 @@
     <string name="Rating">12.5</string>
     <string name="NumberOfRating">5</string>
     <string name="default_rating">2.5/5</string>
+    <string name="fetching">Fetching...</string>
 </resources>

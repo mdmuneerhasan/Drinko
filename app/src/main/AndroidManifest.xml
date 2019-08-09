@@ -16,7 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PreviewActivity"></activity>
+        <activity android:name=".NightServiceActivity"></activity>
+        <activity android:name=".PreviewActivity" />
         <activity android:name=".OfferActivity" />
         <activity android:name=".SignUpActivity" />
         <!--
